@@ -4,10 +4,14 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
-import productRoutes from './routes/productRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+//importing Route
+import productRoutes from './routes/productRoutes.js';
+import categoryRoutes from './routes/categoryRoute.js';
+
+import { sequelize, testConnection } from './config/db.js';
 
 dotenv.config();
 
@@ -31,11 +35,22 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Routes Mounting 
-app.use('/api/products', productRoutes);
+app.use('/api', productRoutes);
+app.use('/api', categoryRoutes);
 
+await sequelize.sync({ alter: true });
 
 //listen to the server
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+
+
+// Wrapping app start in async function to await DB connection
+async function startServer() {
+    await testConnection();
+    
+    app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+}
+
+startServer();

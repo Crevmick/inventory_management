@@ -1,19 +1,13 @@
-// routes/productRoutes.js
 import express from 'express';
-import { upload } from '../config/multerConfig.js';
+import { upload } from '../middleware/multerConfig.js';
+import { createProduct, updateProduct, deleteProduct } from '../controller/productController.js';
 
 const router = express.Router();
 
-// Upload endpoint for image
-router.post('/upload-image', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded.' });
-  }
+// Endpoint to create productn]
+router.post('/products', upload.single('image'), createProduct);
+router.put('/products/:id', upload.single('image'), updateProduct);
+router.delete('/products/:id', deleteProduct);
 
-  res.json({
-    message: 'Image uploaded successfully',
-    file: req.file
-  });
-});
 
 export default router;

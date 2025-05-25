@@ -1,5 +1,5 @@
-import Product from "../model/product.js";
-import  Category from '../model/category.js'
+import { deleteFile } from '../utils/deleteFile.js';
+import { Product, Category } from '../model/index.js';
 
 // CREATE PRODUCT
 export const createProduct = async (req, res) => {
@@ -10,6 +10,7 @@ export const createProduct = async (req, res) => {
         if (categoryId) {
             const category = await Category.findByPk(categoryId);
             if (!category) {
+                if (image) deleteFile(image); 
               return res.status(400).json({ error: "Category does not exist" });
             }
           }
@@ -27,8 +28,55 @@ export const createProduct = async (req, res) => {
             product: product,
         });
     } catch (error) {
-        console.error("Create product error:", error); 
+        if (image) deleteFile(image); // Cleanup image on failure
         res.status(500).json({ error: 'Failed to create product'});
+    }
+};
+
+
+
+// GET ALL PRODUCTS
+export const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.findAll({
+            include: [
+                {
+                    model: Category,
+                    as: 'category', 
+                    attributes: ['id', 'name'], // Include category details
+                }
+            ]
+        });
+
+        res.status(200).json({ products });
+    } catch (error) {
+        console.error("Get all products error:", error.message, error.stack);
+        res.status(500).json({ error: "Failed to fetch products" });
+    }
+};
+
+// GET SINGLE PRODUCT
+export const getSingleProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const product = await Product.findByPk(id, {
+            include: [
+                {
+                    model: Category,
+                    as: 'category',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        res.status(200).json({ product });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch product" });
     }
 };
 
@@ -59,6 +107,7 @@ export const updateProduct = async (req, res) => {
 
         res.status(200).json({ message: "Product updated successfully" });
     } catch (error){
+        if (image) deleteFile(image); // Cleanup image on failure
         res.status(500).json({ error: "Failed to update product" });
     }
 };

@@ -9,9 +9,11 @@ import { fileURLToPath } from 'url';
 
 //importing Route
 import productRoutes from './routes/productRoutes.js';
-import categoryRoutes from './routes/categoryRoute.js';
+import categoryRoutes from './routes/categoryRoute.js'
+import registerRoute from './routes/registerRoute.js'
 
 import { sequelize, testConnection } from './config/db.js';
+
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ dotenv.config();
 const app = express();
 
 
+//middleware
 app.use(express.json()); // for parsing JSON body
 app.use(morgan('dev'));
 app.use(cors());
@@ -35,6 +38,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Routes Mounting 
+app.use('/auth', registerRoute)
 app.use('/api', productRoutes);
 app.use('/api', categoryRoutes);
 

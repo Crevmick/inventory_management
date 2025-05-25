@@ -16,11 +16,9 @@ export const createCategory = async (req, res) => {
       category,
     });
   } catch (error) {
-    console.error('Create category error:', error);
     res.status(500).json({ error: 'Failed to create category' });
   }
 };
-
 
 
 // Get all categories

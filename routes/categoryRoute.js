@@ -6,11 +6,12 @@ import {
   updateCategory,
   deleteCategory,
 } from '../controller/categoryController.js';
+import  authenticateUser from '../middleware/authenticateUser.js';
 
 const router = express.Router();
 
 // Create a new category
-router.post('/categories', createCategory);
+router.post('/categories', authenticateUser,  createCategory);
 
 // Get all categories
 router.get('/categories', getCategories);
@@ -19,9 +20,9 @@ router.get('/categories', getCategories);
 router.get('/categories/:id', getCategoryById);
 
 // Update a category by ID
-router.put('/categories/:id', updateCategory);
+router.put('/categories/:id', authenticateUser, updateCategory);
 
 // Delete a category by ID
-router.delete('/categories/:id', deleteCategory);
+router.delete('/categories/:id', authenticateUser,  deleteCategory);
 
 export default router;

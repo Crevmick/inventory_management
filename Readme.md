@@ -114,7 +114,8 @@ This is a **RESTful API** built with **Node.js**, **Express**, and **Sequelize (
 
 ### 🧑‍💻 Contributing
 
-Contributions, issues, and feature requests are welcome!
+Contributions, issues, and feature requests are welcome! 
+Thank you.
 
 
 
